@@ -2,7 +2,16 @@
 const nextConfig = {
   // Add any config options here
   reactStrictMode: true,
-  swcMinify: true,
+  
+  // Increase serverless function timeout
+  serverExternalPackages: ['@google/generative-ai'],
+  
+  // Configure API route options
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  }
 };
 
 module.exports = nextConfig;

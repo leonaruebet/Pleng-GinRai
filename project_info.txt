@@ -106,4 +106,16 @@ A Next.js web application with a Gemini AI-powered chatbot that helps users find
 - [2024-03-09] Redesigned search bar with frosted glass effect and gradient background
 - [2024-03-09] Enhanced chat interface with modern avatars and message bubbles
 - [2024-03-09] Added gradient text effects for headings and titles
-- [2024-03-09] Improved overall UI with backdrop blur effects for a modern look 
+- [2024-03-09] Improved overall UI with backdrop blur effects for a modern look
+- [2024-03-09] Fixed deployment issues by updating Tailwind CSS configuration
+- [2024-03-09] Created tailwind.config.js file with proper content paths
+- [2024-03-09] Updated postcss.config.mjs to use correct plugins
+- [2024-03-09] Updated package.json with correct Tailwind CSS dependencies
+- [2024-03-09] Fixed globals.css to use proper Tailwind CSS directives
+- [2024-03-09] Updated vercel.json to use environment variables directly
+- [2024-03-09] Successfully deployed application to Vercel
+- [2024-03-09] Fixed API timeout issues by implementing proper timeout handling
+- [2024-03-09] Added timeout handling to Gemini API calls
+- [2024-03-09] Optimized API requests by reducing the number of items requested
+- [2024-03-09] Improved error handling in the API route
+- [2024-03-09] Enhanced user experience by providing better error messages 

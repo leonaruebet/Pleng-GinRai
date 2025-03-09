@@ -17,6 +17,31 @@ const getGeminiClient = () => {
   return new GoogleGenerativeAI(apiKey);
 };
 
+// Set a timeout for Gemini API calls
+const GEMINI_TIMEOUT = 30000; // 30 seconds
+
+/**
+ * Call Gemini API with timeout
+ * @param prompt - The prompt to send to the API
+ * @param timeout - The timeout in milliseconds
+ * @returns Promise<string> - The API response text
+ */
+async function callGeminiWithTimeout(prompt: string, timeout: number = GEMINI_TIMEOUT): Promise<string> {
+  const genAI = getGeminiClient();
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  
+  // Create a promise that rejects after the timeout
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('Gemini API call timed out')), timeout);
+  });
+  
+  // Create the API call promise
+  const apiCallPromise = model.generateContent(prompt).then(result => result.response.text());
+  
+  // Race the promises
+  return Promise.race([apiCallPromise, timeoutPromise]);
+}
+
 /**
  * Verify if restaurants are actually in the specified location
  * @param restaurants - List of restaurants to verify
@@ -27,11 +52,11 @@ async function verifyRestaurantLocations(restaurants: Restaurant[], location: st
   console.log(`[verifyRestaurantLocations] Verifying ${restaurants.length} restaurants in ${location}`);
   
   try {
-    const genAI = getGeminiClient();
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    // Limit the number of restaurants to verify to improve performance
+    const restaurantsToVerify = restaurants.slice(0, 10);
     
     // Create a simplified list of restaurants for verification
-    const restaurantList = restaurants.map(r => ({
+    const restaurantList = restaurantsToVerify.map(r => ({
       id: r.id,
       name: r.name,
       address: r.address
@@ -58,9 +83,7 @@ async function verifyRestaurantLocations(restaurants: Restaurant[], location: st
     
     console.log(`[verifyRestaurantLocations] Sending verification prompt to Gemini API`);
     
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = await callGeminiWithTimeout(prompt);
     
     console.log('[verifyRestaurantLocations] Raw verification response from Gemini API:');
     console.log(text);
@@ -73,7 +96,7 @@ async function verifyRestaurantLocations(restaurants: Restaurant[], location: st
     }
     
     const verifiedIds = JSON.parse(jsonMatch[0]) as string[];
-    console.log(`[verifyRestaurantLocations] Verified ${verifiedIds.length} out of ${restaurants.length} restaurants`);
+    console.log(`[verifyRestaurantLocations] Verified ${verifiedIds.length} out of ${restaurantsToVerify.length} restaurants`);
     
     // Filter the original restaurant list to only include verified restaurants
     const verifiedRestaurants = restaurants.filter(restaurant => 
@@ -81,7 +104,7 @@ async function verifyRestaurantLocations(restaurants: Restaurant[], location: st
     );
     
     // If too few restaurants are verified, return the original list
-    if (verifiedRestaurants.length < 5 && restaurants.length > 0) {
+    if (verifiedRestaurants.length < 3 && restaurants.length > 0) {
       console.log('[verifyRestaurantLocations] Too few verified restaurants, returning original list');
       return restaurants;
     }
@@ -102,9 +125,6 @@ export async function getRestaurantRecommendations(location: string): Promise<Re
   console.log(`[getRestaurantRecommendations] Searching for restaurants in ${location}`);
   
   try {
-    const genAI = getGeminiClient();
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    
     // Check if the location is in Thailand or query is in Thai language
     const isThaiQuery = /[ก-๙]/.test(location) || 
                         /thailand|thai|bangkok|phuket|chiang mai|pattaya/i.test(location);
@@ -114,7 +134,7 @@ export async function getRestaurantRecommendations(location: string): Promise<Re
       
       ${isThaiQuery ? 'คุณเป็นผู้เชี่ยวชาญด้านอาหารและร้านอาหารในประเทศไทย ให้คำแนะนำร้านอาหารที่ดีที่สุดในแต่ละพื้นที่' : ''}
       
-      Generate a detailed list of exactly 15 authentic restaurant recommendations near ${location}.
+      Generate a detailed list of exactly 10 authentic restaurant recommendations near ${location}.
       ${isThaiQuery ? 'เน้นร้านอาหารที่มีอยู่จริงและมีชื่อเสียงในพื้นที่นี้ ให้ข้อมูลที่ถูกต้องและเป็นประโยชน์สำหรับคนท้องถิ่นและนักท่องเที่ยว' : ''}
       
       IMPORTANT: Only include REAL restaurants that ACTUALLY EXIST in ${location}. Do not make up fictional restaurants.
@@ -140,11 +160,9 @@ export async function getRestaurantRecommendations(location: string): Promise<Re
       Only return the JSON array, nothing else. No explanations, no markdown formatting, just the raw JSON array.
     `;
     
-    console.log(`[getRestaurantRecommendations] Sending prompt to Gemini API: ${prompt}`);
+    console.log(`[getRestaurantRecommendations] Sending prompt to Gemini API`);
     
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = await callGeminiWithTimeout(prompt);
     
     console.log('[getRestaurantRecommendations] Raw response from Gemini API:');
     console.log(text);
@@ -201,9 +219,6 @@ export async function getFoodRecommendations(foodType: string): Promise<Food[]> 
   }
   
   try {
-    const genAI = getGeminiClient();
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    
     // Check if the query is in Thai language
     const isThaiQuery = /[ก-๙]/.test(foodType);
     
@@ -212,7 +227,7 @@ export async function getFoodRecommendations(foodType: string): Promise<Food[]> 
       
       ${isThaiQuery ? 'คุณเป็นผู้เชี่ยวชาญด้านอาหารไทยและอาหารนานาชาติ ให้ข้อมูลที่ถูกต้องและละเอียดเกี่ยวกับอาหารแต่ละชนิด' : ''}
       
-      Generate a detailed list of exactly 15 ${foodType} food recommendations.
+      Generate a detailed list of exactly 10 ${foodType} food recommendations.
       ${isThaiQuery ? 'เน้นอาหารที่เป็นที่นิยมและมีความสำคัญทางวัฒนธรรม ให้ข้อมูลที่ถูกต้องและเป็นประโยชน์' : ''}
       
       Include a diverse mix of dishes, from traditional classics to modern interpretations.
@@ -233,11 +248,9 @@ export async function getFoodRecommendations(foodType: string): Promise<Food[]> 
       Only return the JSON array, nothing else. No explanations, no markdown formatting, just the raw JSON array.
     `;
     
-    console.log(`[getFoodRecommendations] Sending prompt to Gemini API: ${prompt}`);
+    console.log(`[getFoodRecommendations] Sending prompt to Gemini API`);
     
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = await callGeminiWithTimeout(prompt);
     
     console.log('[getFoodRecommendations] Raw response from Gemini API:');
     console.log(text);

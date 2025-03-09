@@ -97,7 +97,7 @@ export default function Home() {
         
         <footer className="mt-16 text-center text-gray-500 text-sm">
           <p>© {new Date().getFullYear()} สรุปเพลงจะกินไร. All rights reserved.</p>
-          <p className="mt-1">Powered by Next.js and Gemini AI</p>
+          <p className="mt-1">Powered by Leo Naruebet the smart dude who is too lazy to choose what to eat</p>
         </footer>
       </div>
     </main>

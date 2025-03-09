@@ -12,6 +12,9 @@ interface ChatbotProps {
   onFoodsReceived: (foods: Food[]) => void;
 }
 
+// Set a timeout for the fetch request
+const FETCH_TIMEOUT = 60000; // 60 seconds
+
 /**
  * Chatbot component combines chat history and input components
  * @param onRestaurantsReceived - Callback function when restaurants are received
@@ -22,6 +25,30 @@ const Chatbot: React.FC<ChatbotProps> = ({ onRestaurantsReceived, onFoodsReceive
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  
+  /**
+   * Fetch with timeout
+   * @param url - The URL to fetch
+   * @param options - The fetch options
+   * @param timeout - The timeout in milliseconds
+   * @returns Promise<Response> - The fetch response
+   */
+  const fetchWithTimeout = async (url: string, options: RequestInit, timeout: number): Promise<Response> => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(id);
+      return response;
+    } catch (error) {
+      clearTimeout(id);
+      throw error;
+    }
+  };
   
   /**
    * Handle user message submission
@@ -79,7 +106,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ onRestaurantsReceived, onFoodsReceive
       
       // Make API request
       console.log(`[Chatbot] Making API request with location: ${location || 'none'}, foodType: ${foodType || 'none'}`);
-      const response = await fetch('/api/gemini', {
+      
+      // Use fetch with timeout
+      const response = await fetchWithTimeout('/api/gemini', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +117,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onRestaurantsReceived, onFoodsReceive
           location: location || undefined,
           foodType: foodType || undefined,
         }),
-      });
+      }, FETCH_TIMEOUT);
       
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
@@ -141,7 +170,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onRestaurantsReceived, onFoodsReceive
       const errorMessage: ChatMessage = {
         id: uuidv4(),
         role: 'assistant',
-        content: 'Sorry, something went wrong. Please try again.',
+        content: 'Sorry, the request took too long to process. Please try a more specific query or try again later.',
         timestamp: new Date(),
       };
       
