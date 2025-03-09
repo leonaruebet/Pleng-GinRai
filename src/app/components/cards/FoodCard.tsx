@@ -152,6 +152,12 @@ const FoodCard: React.FC<FoodCardProps> = ({ food, onRemove }) => {
           <p className="text-gray-700 text-sm bg-white bg-opacity-60 p-2 rounded-xl">{food.cuisine || "Not specified"}</p>
         </div>
         
+        {/* Address */}
+        <div className="mb-4">
+          <p className="text-sm font-medium text-gray-500 mb-1">Address</p>
+          <p className="text-gray-700 text-sm bg-white bg-opacity-60 p-2 rounded-xl">{food.address || "Not specified"}</p>
+        </div>
+
         {/* Description */}
         <div>
           <p className="text-sm font-medium text-gray-500 mb-1">Description</p>
