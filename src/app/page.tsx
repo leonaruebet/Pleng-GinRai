@@ -1,101 +1,105 @@
-import Image from "next/image";
+'use client';
 
+/**
+ * Main page component for the Restaurant and Food Finder application
+ */
+import React, { useState } from 'react';
+import Chatbot from './components/chat/Chatbot';
+import CardGrid from './components/cards/CardGrid';
+import { Restaurant, Food } from './types';
+
+/**
+ * Home component is the main page of the application
+ * @returns JSX.Element - The rendered component
+ */
 export default function Home() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [foods, setFoods] = useState<Food[]>([]);
+  
+  /**
+   * Handle restaurants received from the chatbot
+   * @param newRestaurants - Array of restaurant information
+   */
+  const handleRestaurantsReceived = (newRestaurants: Restaurant[]) => {
+    console.log(`[Home] Received ${newRestaurants.length} restaurants`);
+    setRestaurants(newRestaurants);
+    setFoods([]); // Clear foods when new restaurants are received
+  };
+  
+  /**
+   * Handle foods received from the chatbot
+   * @param newFoods - Array of food information
+   */
+  const handleFoodsReceived = (newFoods: Food[]) => {
+    console.log(`[Home] Received ${newFoods.length} foods`);
+    setFoods(newFoods);
+    setRestaurants([]); // Clear restaurants when new foods are received
+  };
+  
+  /**
+   * Remove a restaurant from the list
+   * @param id - The ID of the restaurant to remove
+   */
+  const handleRemoveRestaurant = (id: string) => {
+    console.log(`[Home] Removing restaurant with ID: ${id}`);
+    setRestaurants((prev) => prev.filter((restaurant) => restaurant.id !== id));
+  };
+  
+  /**
+   * Remove a food from the list
+   * @param id - The ID of the food to remove
+   */
+  const handleRemoveFood = (id: string) => {
+    console.log(`[Home] Removing food with ID: ${id}`);
+    setFoods((prev) => prev.filter((food) => food.id !== id));
+  };
+  
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        <header className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-3">สรุปเพลงจะกินไร ?</h1>
+          <p className="text-gray-600 text-lg">
+            ลีโอไม่เลือกแล้ว ลีโอจะให้ AI เลือกให้
+          </p>
+        </header>
+        
+        {/* Search bar section */}
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="bg-white/30 backdrop-blur-md rounded-3xl shadow-lg p-6 border border-white/50">
+            <Chatbot
+              onRestaurantsReceived={handleRestaurantsReceived}
+              onFoodsReceived={handleFoodsReceived}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        
+        {/* Results section */}
+        <div className="mt-8">
+          {(restaurants.length > 0 || foods.length > 0) && (
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
+                {restaurants.length > 0
+                  ? 'ร้านอาหารแนะนำ'
+                  : 'เมนูอาหารแนะนำ'}
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-300 to-indigo-300 mx-auto rounded-full"></div>
+            </div>
+          )}
+          
+          <CardGrid
+            restaurants={restaurants}
+            foods={foods}
+            onRemoveRestaurant={handleRemoveRestaurant}
+            onRemoveFood={handleRemoveFood}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+        
+        <footer className="mt-16 text-center text-gray-500 text-sm">
+          <p>© {new Date().getFullYear()} สรุปเพลงจะกินไร. All rights reserved.</p>
+          <p className="mt-1">Powered by Next.js and Gemini AI</p>
+        </footer>
+      </div>
+    </main>
   );
 }

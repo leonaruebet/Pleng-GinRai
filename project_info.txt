@@ -1,1 +1,109 @@
- 
+# สรุปเพลงจะกินไร (Restaurant and Food Finder Web Application)
+
+## Project Overview
+A Next.js web application with a Gemini AI-powered chatbot that helps users find restaurants and food types based on location.
+
+## Features
+- User can input a location to get a list of nearby restaurants (15-20 results)
+- User can specify a type of food to get a list of food options (15-20 results)
+- Results are displayed as cards that users can remove one by one
+- Restaurant cards display name, cuisine, address, rating, and description
+- Food cards display name, cuisine, description, and ingredients
+- Cards use food emojis based on cuisine type instead of generic images
+- Modern UI with soft gradients, rounded corners, and a calming color palette
+- Cards feature cuisine-specific gradient backgrounds for visual categorization
+- Search bar with frosted glass effect and gradient background for a modern look
+- Chat interface with modern avatars and message bubbles
+- Address display in RestaurantCard features enhanced visibility with Thai language label
+- Collapsible chat history that shows recent interactions
+- Clean, modern layout with search at the top and results below
+- Powered by Gemini AI API for intelligent responses
+- Special support for Thai language queries and Thailand locations
+- Automatic detection of restaurant-related keywords to provide restaurant recommendations
+- Two-stage AI verification process to ensure restaurant recommendations are accurate and exist in the specified location
+- Thai-focused UI with Anuphan font for better readability of Thai text
+- Thai language interface with Thai headings and descriptions
+- Gradient text effects for headings and titles
+- Frosted glass effect for UI components with backdrop blur
+
+## Project Structure
+- `/src/app`: Main application code
+  - `/api`: API routes for backend functionality
+    - `/api/gemini`: Endpoint to interact with Gemini AI
+  - `/components`: Reusable UI components
+    - `/cards`: Card components for displaying restaurants and foods
+      - `RestaurantCard.tsx`: Component for displaying restaurant information
+      - `FoodCard.tsx`: Component for displaying food information
+      - `CardGrid.tsx`: Component for displaying a grid of cards
+    - `/chat`: Chatbot related components
+      - `Chatbot.tsx`: Main chatbot component with search interface
+      - `ChatInput.tsx`: Component for user input styled as a search bar
+      - `ChatMessage.tsx`: Component for displaying chat messages
+      - `ChatHistory.tsx`: Component for displaying chat message history
+  - `/lib`: Utility functions and helpers
+    - `gemini.ts`: Utility functions for interacting with the Gemini API
+  - `/types`: TypeScript type definitions
+    - `index.ts`: Type definitions for the application
+  - `page.tsx`: Main page component
+  - `layout.tsx`: Root layout component
+  - `globals.css`: Global CSS styles
+
+## Dependencies
+- Next.js: React framework
+- TypeScript: Type safety
+- Tailwind CSS: Styling
+- @google/generative-ai: Gemini AI SDK
+- uuid: For generating unique IDs
+- Anuphan: Thai font from Google Fonts
+
+## Environment Variables
+- GEMINI_API_KEY: API key for the Gemini API
+
+## Change Log
+- [2024-03-09] Initial project setup with Next.js
+- [2024-03-09] Created project structure and documentation
+- [2024-03-09] Implemented type definitions
+- [2024-03-09] Implemented Gemini API utility functions
+- [2024-03-09] Implemented API route for Gemini
+- [2024-03-09] Implemented card components for displaying restaurants and foods
+- [2024-03-09] Implemented chat components for user interaction
+- [2024-03-09] Implemented main page component
+- [2024-03-09] Added README.md with setup and usage instructions
+- [2024-03-09] Added .env.local.example for environment variables
+- [2024-03-09] Fixed next.config.js to use CommonJS syntax
+- [2024-03-09] Updated Gemini API model from 'gemini-pro' to 'gemini-2.0-flash'
+- [2024-03-09] Fixed hydration error by adding suppressHydrationWarning to body element
+- [2024-03-09] Added detailed logging of Gemini API responses
+- [2024-03-09] Enhanced Gemini API prompts for more detailed and structured results
+- [2024-03-09] Added Thai language support and restaurant keyword detection
+- [2024-03-09] Implemented two-stage AI verification for restaurant recommendations
+- [2024-03-09] Simplified card components to display only essential information
+- [2024-03-09] Enhanced RestaurantCard component with improved visibility for address and rating information
+- [2024-03-09] Added section labels and border separators to RestaurantCard for better visual hierarchy
+- [2024-03-09] Improved logging in RestaurantCard to debug data display issues
+- [2024-03-09] Enhanced FoodCard component to display cuisine and ingredients information
+- [2024-03-09] Added section labels and border separators to FoodCard for better visual hierarchy
+- [2024-03-09] Added cuisine display to RestaurantCard component for more comprehensive information
+- [2024-03-09] Redesigned card components with high-contrast styling for better readability
+- [2024-03-09] Added detailed debugging logs to help diagnose display issues
+- [2024-03-09] Enhanced card components with background colors and stronger borders for better visibility
+- [2024-03-09] Replaced generic images with food emojis based on cuisine type for better visual representation
+- [2024-03-09] Redesigned UI with mindfulness app aesthetic featuring soft gradients and rounded corners
+- [2024-03-09] Added cuisine-specific gradient backgrounds to cards for visual categorization
+- [2024-03-09] Enhanced CardGrid component with section headers and decorative elements
+- [2024-03-09] Improved empty state design with emoji and gradient accent
+- [2024-03-09] Updated card components with semi-transparent backgrounds and subtle shadows
+- [2024-03-09] Implemented backdrop blur effects for a modern, frosted glass appearance
+- [2024-03-09] Redesigned frontend layout with search bar at top and results below
+- [2024-03-09] Transformed chatbot into a modern search interface with suggestion pills
+- [2024-03-09] Added collapsible chat history for recent interactions
+- [2024-03-09] Updated chat messages with avatar icons and modern styling
+- [2024-03-09] Improved overall UI with a financial app inspired design system
+- [2024-03-09] Enhanced address display in RestaurantCard with Thai language label and improved visibility
+- [2024-03-09] Updated ChatInput component with Thai language suggestion pills for better localization
+- [2024-03-09] Changed application font to Anuphan for better Thai language support
+- [2024-03-09] Updated application title to "สรุปเพลงจะกินไร" and translated UI elements to Thai
+- [2024-03-09] Redesigned search bar with frosted glass effect and gradient background
+- [2024-03-09] Enhanced chat interface with modern avatars and message bubbles
+- [2024-03-09] Added gradient text effects for headings and titles
+- [2024-03-09] Improved overall UI with backdrop blur effects for a modern look 
