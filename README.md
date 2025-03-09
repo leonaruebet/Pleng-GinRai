@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Restaurant & Food Finder
+
+A Next.js web application with a Gemini AI-powered chatbot that helps users find restaurants and food types based on location.
+
+## Features
+
+- User can input a location to get a list of nearby restaurants (15-20 results)
+- User can specify a type of food to get a list of food options (15-20 results)
+- Results are displayed as cards that users can remove one by one
+- Powered by Gemini AI API for intelligent responses
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **API**: Google Generative AI (Gemini)
+- **Deployment**: Vercel (recommended)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18.x or later
+- npm or yarn
+- Gemini API key (get it from [Google AI Studio](https://makersuite.google.com/app/apikey))
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd restaurant-food-finder
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.local.example .env.local
+```
+
+4. Edit `.env.local` and add your Gemini API key:
+
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+# or
+yarn build
+```
 
-## Learn More
+### Run Production Build
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm start
+# or
+yarn start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Enter a location (e.g., "restaurants in New York") to find nearby restaurants
+2. Enter a food type (e.g., "Italian food") to discover food options
+3. View the results as cards
+4. Remove cards you're not interested in by clicking the X button
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/src/app`: Main application code
+  - `/api`: API routes for backend functionality
+    - `/api/gemini`: Endpoint to interact with Gemini AI
+  - `/components`: Reusable UI components
+    - `/ui`: Basic UI components
+    - `/cards`: Card components for displaying restaurants and foods
+    - `/chat`: Chatbot related components
+  - `/lib`: Utility functions and helpers
+  - `/types`: TypeScript type definitions
+  - `/assets`: Project assets
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+# Pleng-GinRai
